@@ -5,7 +5,7 @@
         <div class="max-w-7xl mx-auto px-6 py-8">
 
             <!-- Header -->
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-6">
+            <div class="flex items-center justify-between mb-6">
                 <div>
                     <h2 class="text-xl font-bold text-gray-800 dark:text-white">🛍️ Tienda</h2>
                     <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">
@@ -18,7 +18,7 @@
                 </p>
             </div>
 
-            <div class="w-full lg:w-56 flex-shrink-0 space-y-6">
+            <div class="flex gap-6">
 
                 <!-- Panel de filtros -->
                 <div class="w-56 flex-shrink-0 space-y-6">
@@ -115,12 +115,12 @@
                     </div>
 
                     <div v-else>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+                        <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
                             <div v-for="product in productsStore.products" :key="product.id"
                                 class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-md transition group">
 
                                 <!-- Imagen -->
-                                <div class="h-40 sm:h-36 overflow-hidden bg-amber-50 dark:bg-gray-700 relative">
+                                <div class="h-36 overflow-hidden bg-amber-50 dark:bg-gray-700 relative">
                                     <img v-if="product.image_url"
                                         :src="product.image_url"
                                         :alt="product.name"
