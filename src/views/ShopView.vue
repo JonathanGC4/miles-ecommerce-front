@@ -116,8 +116,7 @@
 
                     <div v-else>
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-                            <div v-for="product in productsStore.products.filter(p => p.stock > 0)" 
-                                :key="product.id"
+                            <div v-for="product in productsStore.products" :key="product.id"
                                 class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-md transition group">
 
                                 <!-- Imagen -->
