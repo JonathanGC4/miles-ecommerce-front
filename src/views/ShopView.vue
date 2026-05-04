@@ -2,10 +2,10 @@
     <div class="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
         <AppNavbar />
 
-        <div class="max-w-7xl mx-auto px-6 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
 
             <!-- Header -->
-            <div class="flex items-center justify-between mb-6">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-6">
                 <div>
                     <h2 class="text-xl font-bold text-gray-800 dark:text-white">🛍️ Tienda</h2>
                     <p class="text-gray-500 dark:text-gray-400 text-sm mt-1">
@@ -18,176 +18,125 @@
                 </p>
             </div>
 
-            <div class="flex gap-6">
+            <!-- Layout -->
+            <div class="flex flex-col sm:flex-row gap-4 sm:gap-6">
 
-                <!-- Panel de filtros -->
-                <div class="w-56 flex-shrink-0 space-y-6">
+                <!-- Filtros -->
+                <div class="w-full sm:w-56 flex-shrink-0">
 
-                    <!-- Búsqueda -->
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-2">Buscar</label>
-                        <input v-model="filters.search" type="text"
-                            placeholder="Nombre del producto..."
-                            @input="handleFilter"
-                            class="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 transition text-sm" />
-                    </div>
-
-                    <!-- Categorías -->
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-2">Categoría</label>
-                        <div class="space-y-1">
-                            <button
-                                @click="filters.category = ''; handleFilter()"
-                                :class="[
-                                    'w-full text-left px-3 py-2 rounded-lg text-sm transition',
-                                    !filters.category
-                                        ? 'bg-amber-500 text-white font-medium'
-                                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                                ]">
-                                Todas
-                            </button>
-                            <button
-                                v-for="cat in categoriesStore.categories" :key="cat.id"
-                                @click="filters.category = cat.slug; handleFilter()"
-                                :class="[
-                                    'w-full text-left px-3 py-2 rounded-lg text-sm transition flex items-center justify-between',
-                                    filters.category === cat.slug
-                                        ? 'bg-amber-500 text-white font-medium'
-                                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'
-                                ]">
-                                <span>{{ cat.icon }} {{ cat.name }}</span>
-                                <span class="text-xs opacity-70">{{ cat.products_count }}</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Precio -->
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-2">Precio</label>
-                        <div class="space-y-2">
-                            <input v-model.number="filters.min_price" type="number" min="0"
-                                placeholder="Mínimo $"
-                                @change="handleFilter"
-                                class="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 transition text-sm" />
-                            <input v-model.number="filters.max_price" type="number" min="0"
-                                placeholder="Máximo $"
-                                @change="handleFilter"
-                                class="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 transition text-sm" />
-                        </div>
-                    </div>
-
-                    <!-- Ordenar -->
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-2">Ordenar por</label>
-                        <select v-model="filters.sort" @change="handleFilter"
-                            class="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-400 transition text-sm">
-                            <option value="">Nombre A-Z</option>
-                            <option value="price_asc">Precio: menor a mayor</option>
-                            <option value="price_desc">Precio: mayor a menor</option>
-                            <option value="miles_desc">Más millas primero</option>
-                            <option value="newest">Más recientes</option>
-                        </select>
-                    </div>
-
-                    <!-- Limpiar filtros -->
-                    <button v-if="hasActiveFilters" @click="clearFilters"
-                        class="w-full text-sm text-red-400 hover:text-red-600 transition text-center">
-                        🗑️ Limpiar filtros
+                    <!-- Botón móvil -->
+                    <button @click="filtersOpen = !filtersOpen"
+                        class="sm:hidden w-full flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 mb-3 text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <span>🔍 Filtros</span>
+                        <span>{{ filtersOpen ? '▲' : '▼' }}</span>
                     </button>
-                </div>
 
-                <!-- Grid de productos -->
-                <div class="flex-1">
+                    <div :class="[filtersOpen ? 'block' : 'hidden', 'sm:block space-y-6']">
 
-                    <!-- Loading -->
-                    <div v-if="productsStore.loading" class="text-center py-16 text-gray-400">
-                        Cargando productos...
-                    </div>
+                        <!-- Buscar -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-2">Buscar</label>
+                            <input v-model="filters.search" @input="handleFilter"
+                                class="w-full px-3 py-2 border rounded-xl text-sm"
+                                placeholder="Nombre..." />
+                        </div>
 
-                    <!-- Empty -->
-                    <div v-else-if="productsStore.products.length === 0"
-                        class="text-center py-16 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700">
-                        <p class="text-4xl mb-3">🔍</p>
-                        <p class="text-gray-400">No se encontraron productos</p>
-                        <button @click="clearFilters" class="text-amber-500 text-sm mt-2 hover:underline">
-                            Limpiar filtros
-                        </button>
-                    </div>
+                        <!-- Categorías -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-2">Categoría</label>
+                            <div class="space-y-1">
+                                <button @click="filters.category = ''; handleFilter()"
+                                    class="w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-gray-100">
+                                    Todas
+                                </button>
 
-                    <div v-else>
-                        <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
-                            <div v-for="product in productsStore.products" :key="product.id"
-                                class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-md transition group">
-
-                                <!-- Imagen -->
-                                <div class="h-36 overflow-hidden bg-amber-50 dark:bg-gray-700 relative">
-                                    <img v-if="product.image_url"
-                                        :src="product.image_url"
-                                        :alt="product.name"
-                                        class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
-                                    <div v-else
-                                        class="w-full h-full flex items-center justify-center text-4xl group-hover:scale-105 transition">
-                                        {{ getProductEmoji(product.name) }}
-                                    </div>
-
-                                    <!-- Badge categoría -->
-                                    <div v-if="product.category"
-                                        class="absolute top-2 left-2 bg-white dark:bg-gray-800 bg-opacity-90 px-2 py-0.5 rounded-full text-xs font-medium text-gray-600 dark:text-gray-300">
-                                        {{ product.category.icon }} {{ product.category.name }}
-                                    </div>
-                                </div>
-
-                                <div class="p-4">
-                                    <h3 class="font-semibold text-gray-800 dark:text-white text-sm leading-tight">
-                                        {{ product.name }}
-                                    </h3>
-                                    <p class="text-gray-400 text-xs mt-1 line-clamp-2">{{ product.description }}</p>
-
-                                    <div class="mt-3 flex items-center justify-between">
-                                        <p class="font-bold text-gray-800 dark:text-white">${{ product.price }}</p>
-                                        <span class="text-xs bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-300 px-2 py-1 rounded-full">
-                                            +{{ calculateMiles(product) }} mi.
-                                        </span>
-                                    </div>
-
-                                    <p class="text-xs text-gray-400 mt-1">Stock: {{ product.stock }}</p>
-
-                                    <!-- Cantidad y agregar -->
-                                    <div class="mt-3 flex gap-2 items-center">
-                                        <div class="flex items-center border border-gray-200 dark:border-gray-600 rounded-lg overflow-hidden">
-                                            <button @click="decreaseQty(product.id)"
-                                                class="px-2 py-1 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition text-sm">−</button>
-                                            <span class="px-2 py-1 text-sm text-gray-700 dark:text-gray-300 min-w-[2rem] text-center">
-                                                {{ quantities[product.id] || 1 }}
-                                            </span>
-                                            <button @click="increaseQty(product.id, product.stock)"
-                                                class="px-2 py-1 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition text-sm">+</button>
-                                        </div>
-                                        <button @click="handleAddToCart(product)"
-                                            :disabled="addingToCart === product.id"
-                                            class="flex-1 bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-500 hover:to-amber-600 disabled:opacity-50 text-white text-xs font-semibold py-2 rounded-lg transition">
-                                            {{ addingToCart === product.id ? '...' : '🛒 Agregar' }}
-                                        </button>
-                                    </div>
-                                </div>
+                                <button v-for="cat in categoriesStore.categories" :key="cat.id"
+                                    @click="filters.category = cat.slug; handleFilter()"
+                                    class="w-full text-left px-3 py-2 text-sm rounded-lg hover:bg-gray-100">
+                                    {{ cat.icon }} {{ cat.name }}
+                                </button>
                             </div>
                         </div>
 
-                        <!-- Paginación -->
-                        <div v-if="productsStore.pagination.lastPage > 1"
-                            class="flex justify-center gap-2 mt-8">
-                            <button v-for="page in productsStore.pagination.lastPage" :key="page"
-                                @click="goToPage(page)"
-                                :class="[
-                                    'w-9 h-9 rounded-lg text-sm font-medium transition',
-                                    page === productsStore.pagination.currentPage
-                                        ? 'bg-amber-500 text-white'
-                                        : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600'
-                                ]">
-                                {{ page }}
-                            </button>
+                        <!-- Precio -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 mb-2">Precio</label>
+                            <input v-model.number="filters.min_price" @change="handleFilter"
+                                type="number" placeholder="Min"
+                                class="w-full mb-2 px-3 py-2 border rounded-xl text-sm" />
+                            <input v-model.number="filters.max_price" @change="handleFilter"
+                                type="number" placeholder="Max"
+                                class="w-full px-3 py-2 border rounded-xl text-sm" />
+                        </div>
+
+                        <!-- Orden -->
+                        <div>
+                            <select v-model="filters.sort" @change="handleFilter"
+                                class="w-full px-3 py-2 border rounded-xl text-sm">
+                                <option value="">Nombre</option>
+                                <option value="price_asc">Precio ↑</option>
+                                <option value="price_desc">Precio ↓</option>
+                            </select>
+                        </div>
+
+                        <!-- Limpiar -->
+                        <button v-if="hasActiveFilters" @click="clearFilters"
+                            class="text-red-400 text-sm">
+                            Limpiar filtros
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Productos -->
+                <div class="flex-1 min-w-0">
+
+                    <!-- Loading -->
+                    <div v-if="productsStore.loading" class="text-center py-10">
+                        Cargando...
+                    </div>
+
+                    <!-- Empty -->
+                    <div v-else-if="filteredProducts.length === 0" class="text-center py-10">
+                        No hay productos
+                    </div>
+
+                    <!-- Grid -->
+                    <div v-else>
+                        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+
+                            <div v-for="product in filteredProducts" :key="product.id"
+                                class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border overflow-hidden">
+
+                                <!-- Imagen -->
+                                <div class="h-36 bg-gray-100 flex items-center justify-center">
+                                    <img v-if="product.image_url" :src="product.image_url" class="h-full w-full object-cover"/>
+                                    <div v-else class="text-3xl">
+                                        {{ getProductEmoji(product.name) }}
+                                    </div>
+                                </div>
+
+                                <!-- Info -->
+                                <div class="p-3">
+                                    <h3 class="text-sm font-semibold">{{ product.name }}</h3>
+
+                                    <p class="text-xs text-gray-400">
+                                        ${{ product.price }}
+                                    </p>
+
+                                    <p class="text-xs text-gray-400">
+                                        Stock: {{ product.stock }}
+                                    </p>
+
+                                    <button @click="handleAddToCart(product)"
+                                        class="mt-2 w-full bg-amber-500 text-white text-xs py-2 rounded-lg">
+                                        🛒 Agregar
+                                    </button>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -213,6 +162,7 @@ const quantities   = ref({})
 const addingToCart = ref(null)
 let   filterTimer  = null
 
+const filtersOpen = ref(false)
 const filters = ref({
     search:    '',
     category:  '',

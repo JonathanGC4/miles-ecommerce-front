@@ -6,7 +6,7 @@
             <h2 class="text-xl font-bold text-gray-800 dark:text-white mb-6">⚡ Checkout</h2>
 
             <!-- Stepper -->
-            <div class="flex items-center justify-between mb-8 relative">
+      <div class="flex items-center justify-between mb-6 sm:mb-8 relative px-2">      
                 <div class="absolute top-4 left-0 right-0 h-0.5 bg-gray-200 dark:bg-gray-700 z-0"></div>
                 <div
                     class="absolute top-4 left-0 h-0.5 bg-amber-400 z-0 transition-all duration-500"
@@ -26,17 +26,17 @@
                         <span v-if="currentStep > index + 1">✓</span>
                         <span v-else>{{ index + 1 }}</span>
                     </div>
-                    <p class="text-xs mt-2 font-medium"
+                    <p class="text-xs mt-2 font-medium hidden sm:block"
                         :class="currentStep >= index + 1 ? 'text-amber-600 dark:text-amber-400' : 'text-gray-400'">
                         {{ step }}
                     </p>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="flex flex-col lg:grid lg:grid-cols-3 gap-4 sm:gap-6">
 
                 <!-- Formulario pasos -->
-                <div class="lg:col-span-2">
+                <div class="lg:col-span-2 order-2 lg:order-1">
 
                     <!-- PASO 1 — Dirección -->
                     <div v-if="currentStep === 1"
@@ -361,8 +361,8 @@
                 </div>
 
                 <!-- Resumen lateral -->
-                <div class="lg:col-span-1">
-                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 sticky top-24">
+                <div class="lg:col-span-1 order-1 lg:order-2">
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 lg:sticky lg:top-24">
                         <h3 class="font-bold text-gray-800 dark:text-white mb-4 text-sm">Tu orden</h3>
 
                         <div class="space-y-2 mb-4">
