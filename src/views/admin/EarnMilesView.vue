@@ -257,4 +257,4 @@ async function handleEarn() {
 }
 
 onMounted(() => loadClients())
-</script>
+</script>  
